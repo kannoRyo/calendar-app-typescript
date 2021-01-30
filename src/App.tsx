@@ -1,11 +1,12 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import {Header, CalendarBoard} from './components/index'
 
-function App() {
+const App = () => {
   return (
-    <div className="App">
-      aaa
+    <div>
+      <Header/>
+      <CalendarBoard/>
     </div>
   );
 }
