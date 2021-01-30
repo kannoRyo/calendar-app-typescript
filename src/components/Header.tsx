@@ -1,9 +1,12 @@
 import React from 'react'
-import {makeStyles} from '@material-ui/core'
+import {Button, makeStyles} from '@material-ui/core'
 import MenuIcon from '@material-ui/icons/Menu';
 import EventIcon from '@material-ui/icons/Event';
 import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
+import { useDispatch, useSelector } from 'react-redux';
+import {nextMonth, getYear, previousMonth} from '../features/time/timeSlice'
+import dayjs from 'dayjs';
 
 const useStyles = makeStyles({
     header:{
@@ -21,7 +24,7 @@ const useStyles = makeStyles({
     title:{
         fontWeight: 'normal',
         fontSize:'28px',
-        margin: '0 0 0 10px',
+        margin: '0 15px 0 10px',
         lineHeight: '67px'
     },
     headerTitle:{
@@ -32,15 +35,31 @@ const useStyles = makeStyles({
 
 const Header = ()=>{
     const classes = useStyles()
+    const selector = useSelector(state => state)
+    const dispatch = useDispatch()
+    console.log(selector)
+    const year = dayjs(getYear(selector)).year()
+    const month = dayjs(getYear(selector)).month() + 1
 
 	return (
         <div className={classes.header} >
             <MenuIcon className={classes.icon} />
             <EventIcon className={classes.icon} color="primary" />
             <h1 className={classes.title} >カレンダー</h1>
-            <NavigateBeforeIcon className={classes.icon} />
-            <NavigateNextIcon className={classes.icon} />
-            <p className={classes.headerTitle} >◯年◯月</p>
+            <Button>
+                <NavigateBeforeIcon
+                    className={classes.icon} 
+                    onClick={()=> dispatch(previousMonth()) }
+                />
+            </Button>
+            <Button>
+                <NavigateNextIcon 
+                    className={classes.icon} 
+                    onClick={()=> dispatch(nextMonth()) }
+                />
+            </Button>
+
+            <p className={classes.headerTitle} >{year}年{month}月</p>
         </div>
     )
 }
