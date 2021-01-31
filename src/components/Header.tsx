@@ -5,7 +5,7 @@ import EventIcon from '@material-ui/icons/Event';
 import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import { useDispatch, useSelector } from 'react-redux';
-import {nextMonth, getYear, previousMonth} from '../features/time/timeSlice'
+import {nextMonth, getDayjs, previousMonth} from '../features/time/timeSlice'
 import dayjs from 'dayjs';
 
 const useStyles = makeStyles({
@@ -29,7 +29,8 @@ const useStyles = makeStyles({
     },
     headerTitle:{
         fontSize: '20px',
-        marginLeft: '25px'
+        marginLeft: '25px',
+        lineHeight:'65px'
     }
 })
 
@@ -38,8 +39,8 @@ const Header = ()=>{
     const selector = useSelector(state => state)
     const dispatch = useDispatch()
     console.log(selector)
-    const year = dayjs(getYear(selector)).year()
-    const month = dayjs(getYear(selector)).month() + 1
+    const year = dayjs(getDayjs(selector)).year()
+    const month = dayjs(getDayjs(selector)).month() + 1
 
 	return (
         <div className={classes.header} >

@@ -1,3 +1,4 @@
+import { DockRounded } from '@material-ui/icons'
 import dayjs from 'dayjs'
 
 const renderPreviousCalendar = (y:number,m:number) =>{
@@ -38,11 +39,20 @@ const rendercCurrentCalendar = (y:number,m:number) =>{
     return CurentArray
 }
 
+const arrayChunk = ([...array], size = 1) => {
+    return array.reduce((acc, value, index) => index % size ? acc : [...acc, array.slice(index, index + size)], []);
+}
+
 export const renderCalendar = (y:number,m:number) => {
     const p = renderPreviousCalendar(y,m)
-    const c = renderNextCalendar(y,m)
     const n = rendercCurrentCalendar(y,m)
+    const c = renderNextCalendar(y,m)
 
-    const calendar = p.concat(c).concat(n)
-    console.log(calendar)
+    const calendar = p.concat(n).concat(c)
+    
+
+    const slicedCalendar = arrayChunk(calendar, 7)
+    return slicedCalendar
 }
+
+

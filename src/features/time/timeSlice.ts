@@ -7,12 +7,8 @@ const timeSlice = createSlice({
     name: 'time',
     initialState,
     reducers:{
-        nextMonth: (state):any  => {
-            state.add(1, 'month')
-        },
-        previousMonth: (state):any => {
-            state.add(-1, 'month')
-        }
+        nextMonth: (state):any  => state.add(1, 'month'),
+        previousMonth: (state):any => state.add(-1, 'month')
     },
 })
 
@@ -24,13 +20,9 @@ export default timeSlice
 
 const timeSelector = (state:any) => state.time
 
-export const getYear = createSelector(
+export const getDayjs = createSelector(
     [timeSelector],
     state => state
 )
 
-export const getMonth = createSelector(
-    [timeSelector],
-    state => state
-)
 
