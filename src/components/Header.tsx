@@ -38,7 +38,6 @@ const Header = ()=>{
     const classes = useStyles()
     const selector = useSelector(state => state)
     const dispatch = useDispatch()
-    console.log(selector)
     const year = dayjs(getDayjs(selector)).year()
     const month = dayjs(getDayjs(selector)).month() + 1
 
@@ -47,17 +46,15 @@ const Header = ()=>{
             <MenuIcon className={classes.icon} />
             <EventIcon className={classes.icon} color="primary" />
             <h1 className={classes.title} >カレンダー</h1>
-            <Button>
-                <NavigateBeforeIcon
-                    className={classes.icon} 
-                    onClick={()=> dispatch(previousMonth()) }
-                />
+            <Button
+                onClick={()=> dispatch(previousMonth()) }
+            >
+                <NavigateBeforeIcon className={classes.icon} />
             </Button>
-            <Button>
-                <NavigateNextIcon 
-                    className={classes.icon} 
-                    onClick={()=> dispatch(nextMonth()) }
-                />
+            <Button
+                onClick={()=> dispatch(nextMonth()) }
+            >
+                <NavigateNextIcon className={classes.icon} />
             </Button>
 
             <p className={classes.headerTitle} >{year}年{month}月</p>

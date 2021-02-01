@@ -35,7 +35,17 @@ const useStyles = makeStyles({
     dateItem:{
         listStyle: 'none',
         width:'14.2%',
-        color:'rgba(0, 0, 0, 0.54)',
+        color:'rgba(0, 0, 0, 0.40)',
+        height: '135px',
+        paddingTop: '10px',
+        borderRight: '1px solid #ccc',
+        borderBottom: '1px solid #ccc',
+
+    },
+    dateIsMonthItem:{
+        listStyle: 'none',
+        width:'14.2%',
+        color:'black',
         height: '135px',
         paddingTop: '10px',
         borderRight: '1px solid #ccc',
@@ -68,8 +78,8 @@ const CalendarBoard = ()=>{
                 calendar.map((weekDate: number[], i: number)=>(
                     <ul className={classes.dateList} >
                         {
-                            weekDate.map((date: number, i:number)=>(
-                              <li className={classes.dateItem} key={i.toString()} >{date}</li>
+                            weekDate.map((date:any , i:number)=>(
+                              <li className={  date.isMonth ?  classes.dateIsMonthItem : classes.dateItem }  key={i.toString()}  >{date.date}</li>
                             ))
                         }
                     </ul>

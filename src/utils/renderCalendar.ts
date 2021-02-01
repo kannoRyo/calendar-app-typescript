@@ -8,7 +8,10 @@ const renderPreviousCalendar = (y:number,m:number) =>{
     let date = dayjs(d).date(0).date()
 
     for(let i = 1 ; i <= day ;i++){
-        previousArray.unshift(date)
+        previousArray.unshift({
+            date: date,
+            isMonth: false
+        })
         date--
     }
     return previousArray
@@ -20,7 +23,10 @@ const renderNextCalendar = (y:number ,m:number ) =>{
     let day = dayjs(d).day()
 
     for(let i = 1 ; day <= 6 ;i++){
-        NextArray.push(i)
+        NextArray.push({
+            date: i,
+            isMonth: false
+        })
         day++
     }    
 
@@ -33,7 +39,10 @@ const rendercCurrentCalendar = (y:number,m:number) =>{
     let date = dayjs(d).date(0).date()
 
     for(let i=1; i <= date ; i++){
-        CurentArray.push(i)
+        CurentArray.push({
+            date: i,
+            isMonth: true
+        })
     }
 
     return CurentArray
@@ -44,9 +53,9 @@ const arrayChunk = ([...array], size = 1) => {
 }
 
 export const renderCalendar = (y:number,m:number) => {
-    const p = renderPreviousCalendar(y,m)
-    const n = rendercCurrentCalendar(y,m)
-    const c = renderNextCalendar(y,m)
+    const p = renderPreviousCalendar(y,m)  //先月
+    const n = rendercCurrentCalendar(y,m)　//今月
+    const c = renderNextCalendar(y,m)      //来月
 
     const calendar = p.concat(n).concat(c)
     
