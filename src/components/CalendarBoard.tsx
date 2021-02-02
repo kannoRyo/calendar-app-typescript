@@ -5,8 +5,7 @@ import {dayArray} from '../utils/Array'
 import dayjs from 'dayjs'
 import { getDayjs } from '../features/time/timeSlice'
 import {renderCalendar} from '../utils/renderCalendar'
-import {ScheduleCreateDialog} from './index'
-import {ScheduleBar} from './UIKit/index'
+import {ScheduleDialog} from './index'
 import {fetchSchedulesAsync, getSchedules} from '../features/schedules/scheduleSlice'
 
 const useStyles = makeStyles({
@@ -56,6 +55,15 @@ const useStyles = makeStyles({
     },
     dateNum:{
         marginBottom:'10px'
+    },
+    bar:{
+        width:'90%',
+        margin:'5px auto',
+        backgroundColor: '#6aa7d0',
+        padding: '6px 0',
+        borderRadius: '4px',
+        color: '#f5f5f5',
+        cursor: 'pointer'
     }
 })
 
@@ -67,13 +75,21 @@ const CalendarBoard = ()=>{
     const dispatch = useDispatch()
 
     const [isCreate, setIscreate] = useState(false)
+    const [detail, setDetail] = useState({})
     const [selectedTime, setSelectedTime] = useState({})
 
     const calendar = renderCalendar(year, month)
     const schedules = getSchedules(selector)
 
     const handleIsCreate = () =>{
-        setIscreate(!isCreate)
+        setIscreate(false)
+        setTimeout(()=>{
+            setDetail({})
+        },300)
+    }
+
+    const handleIsCreateClose = () =>{
+        setIscreate(false)
     }
 
     const hadnleSelectedTime = (year: number, month: number, date: number) =>{
@@ -87,8 +103,6 @@ const CalendarBoard = ()=>{
     useEffect( ()=>{
         dispatch(fetchSchedulesAsync(year, month))
     },[month])
-
-    console.log(schedules)
     
 	return (
     <>
@@ -112,16 +126,24 @@ const CalendarBoard = ()=>{
                                             key={i.toString()}　
                                             onClick={()=>{
                                                 hadnleSelectedTime(year, month, date.date)
-                                                setIscreate(!isCreate)
+                                                setIscreate(true)
                                             }}
                                         >
                                             <div className={classes.dateNum} > 
-                                             {date.date}
-                                            </div>
+                                             {date.date}</div>
                                             {
-                                                todaySchedules.map((schedule:any)=>(
-                                                    <ScheduleBar schedule={schedule} handleIsCreate={()=>handleIsCreate()}　/> 
-                                                ))     
+                                                todaySchedules.map((schedule:any)=>{
+                                                    return(
+                                                        <div className={classes.bar} onClick={()=> setDetail({
+                                                            title: schedule.title,
+                                                            place: schedule.place,
+                                                            description: schedule.description,
+                                                            created_at: schedule.created_at,
+                                                            month: month+1,
+                                                            date: date.date
+                                                        })} >{schedule.title}</div>
+                                                    )
+                                                })     
                                             }
                                         </li>
                                     )
@@ -131,10 +153,11 @@ const CalendarBoard = ()=>{
                     ))
                 }
         </div>
-        <ScheduleCreateDialog
+        <ScheduleDialog
             handleToggle={()=> handleIsCreate()}
             open={isCreate}
             time={selectedTime}
+            detail={detail}
         />
     </>
 )
