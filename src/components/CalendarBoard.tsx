@@ -1,11 +1,13 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {makeStyles} from '@material-ui/core'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import {dayArray} from '../utils/Array'
 import dayjs from 'dayjs'
 import { getDayjs } from '../features/time/timeSlice'
 import {renderCalendar} from '../utils/renderCalendar'
-import { rootReducer } from '../features/store/store'
+import {ScheduleCreateDialog} from './index'
+import {ScheduleBar} from './UIKit/index'
+import {fetchSchedulesAsync, getSchedules} from '../features/schedules/scheduleSlice'
 
 const useStyles = makeStyles({
     board:{
@@ -51,6 +53,9 @@ const useStyles = makeStyles({
         borderRight: '1px solid #ccc',
         borderBottom: '1px solid #ccc',
 
+    },
+    dateNum:{
+        marginBottom:'10px'
     }
 })
 
@@ -59,33 +64,79 @@ const CalendarBoard = ()=>{
     const selector = useSelector(state => state)
     const year = dayjs(getDayjs(selector)).year()
     const month = dayjs(getDayjs(selector)).month() 
-    const row = [1,2,3,4,5]
+    const dispatch = useDispatch()
+
+    const [isCreate, setIscreate] = useState(false)
+    const [selectedTime, setSelectedTime] = useState({})
 
     const calendar = renderCalendar(year, month)
+    const schedules = getSchedules(selector)
 
-    console.log(calendar)
+    const handleIsCreate = () =>{
+        setIscreate(!isCreate)
+    }
 
+    const hadnleSelectedTime = (year: number, month: number, date: number) =>{
+        setSelectedTime({
+            year: year,
+            month: month,
+            date: date
+        })
+    }
+    
+    useEffect( ()=>{
+        dispatch(fetchSchedulesAsync(year, month))
+    },[month])
+
+    console.log(schedules)
+    
 	return (
-	<div className={classes.board} >
-        <ul className={classes.dayList} >
-            {
-                dayArray.map((day: string,i: number) =>(
-                    <li key={i.toString()} className={classes.dayItem} >{day}</li>
-                ))
-            }
-        </ul>
-            {
-                calendar.map((weekDate: number[], i: number)=>(
-                    <ul className={classes.dateList} >
-                        {
-                            weekDate.map((date:any , i:number)=>(
-                              <li className={  date.isMonth ?  classes.dateIsMonthItem : classes.dateItem }  key={i.toString()}  >{date.date}</li>
-                            ))
-                        }
-                    </ul>
-                ))
-            }
-    </div>
+    <>
+        <div className={classes.board} >
+            <ul className={classes.dayList} >
+                {
+                    dayArray.map((day: string,i: number) =>(
+                        <li key={i.toString()} className={classes.dayItem} >{day}</li>
+                    ))
+                }
+            </ul>
+                {
+                    calendar.map((weekDate: number[], i: number)=>(
+                        <ul className={classes.dateList} >
+                            {
+                                weekDate.map((date:any , i:number)=>{
+                                    const todaySchedules = schedules.filter((schedule:any)=> (date.isMonth === true && date.date === schedule.date) )
+                                    return(
+                                        <li 
+                                            className={  date.isMonth ?  classes.dateIsMonthItem : classes.dateItem }  
+                                            key={i.toString()}　
+                                            onClick={()=>{
+                                                hadnleSelectedTime(year, month, date.date)
+                                                setIscreate(!isCreate)
+                                            }}
+                                        >
+                                            <div className={classes.dateNum} > 
+                                             {date.date}
+                                            </div>
+                                            {
+                                                todaySchedules.map((schedule:any)=>(
+                                                    <ScheduleBar schedule={schedule} handleIsCreate={()=>handleIsCreate()}　/> 
+                                                ))     
+                                            }
+                                        </li>
+                                    )
+                                })
+                            }
+                        </ul>
+                    ))
+                }
+        </div>
+        <ScheduleCreateDialog
+            handleToggle={()=> handleIsCreate()}
+            open={isCreate}
+            time={selectedTime}
+        />
+    </>
 )
 }
 
